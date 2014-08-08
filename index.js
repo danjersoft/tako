@@ -8,7 +8,7 @@ var util = require('util')
   , stream = require('stream')
   , qs = require('querystring')
   , http = require('http')
-  , https = require('https')
+  // , https = require('https')
   // Dependencies
   , mapleTree = require('mapleTree')
   , filed = require('filed')
@@ -375,7 +375,7 @@ function Application (options) {
   
   // setup servers
   self.http = options.http || {}
-  self.https = options.https || {}
+  // self.https = options.https || {}
   if (io) {
     self.socketio = options.socketio === undefined ? {} : options.socketio
     if (!self.socketio.logger && self.logger) {
@@ -386,10 +386,10 @@ function Application (options) {
   }
   
   self.httpServer = http.createServer()
-  self.httpsServer = https.createServer(self.https)
+  // self.httpsServer = https.createServer(self.https)
   
   self.httpServer.on('request', self.onRequest)
-  self.httpsServer.on('request', self.onRequest)
+  // self.httpsServer.on('request', self.onRequest)
   
   var _listenProxied = false
   var listenProxy = function () {
@@ -398,7 +398,7 @@ function Application (options) {
   }
   
   self.httpServer.on('listening', listenProxy)
-  self.httpsServer.on('listening', listenProxy)
+  // self.httpsServer.on('listening', listenProxy)
   
   if (io && self.socketio) {
     // setup socket.io
@@ -407,9 +407,9 @@ function Application (options) {
     self.httpServer.on('upgrade', function (request, socket, head) {
       self._ioEmitter.emit('upgrade', request, socket, head)
     })
-    self.httpsServer.on('upgrade', function (request, socket, head) {
-      self._ioEmitter.emit('upgrade', request, socket, head)
-    })
+    // self.httpsServer.on('upgrade', function (request, socket, head) {
+    //   self._ioEmitter.emit('upgrade', request, socket, head)
+    // })
     
     self.socketioManager = new io.Manager(self._ioEmitter, self.socketio)
     self.sockets = self.socketioManager.sockets
@@ -467,11 +467,11 @@ Application.prototype.close = function (cb) {
     self.httpServer.once('close', end)
     self.httpServer.close()
   }
-  if (self.httpsServer._handle) {
-    counter++
-    self.httpsServer.once('close', end)
-    self.httpsServer.close()
-  }
+  // if (self.httpsServer._handle) {
+  //   counter++
+  //   self.httpsServer.once('close', end)
+  //   self.httpsServer.close()
+  // }
   end()
   return self
 }
@@ -799,13 +799,13 @@ function Router (hosts, options) {
   }
   
   self.httpServer = http.createServer()
-  self.httpsServer = https.createServer(self.options.ssl || {})
+  // self.httpsServer = https.createServer(self.options.ssl || {})
   
   self.httpServer.on('request', makeHandler('request'))
-  self.httpsServer.on('request', makeHandler('request'))
+  // self.httpsServer.on('request', makeHandler('request'))
   
   self.httpServer.on('upgrade', makeHandler('upgrade'))
-  self.httpsServer.on('upgrade', makeHandler('upgrade'))
+  // self.httpsServer.on('upgrade', makeHandler('upgrade'))
 }
 Router.prototype.host = function (host, app) {
   this.hosts[host] = app
@@ -826,11 +826,11 @@ Router.prototype.close = function (cb) {
     self.httpServer.once('close', end)
     self.httpServer.close()
   }
-  if (self.httpsServer._handle) {
-    counter++
-    self.httpsServer.once('close', end)
-    self.httpsServer.close()
-  }
+  // if (self.httpsServer._handle) {
+  //   counter++
+  //   self.httpsServer.once('close', end)
+  //   self.httpsServer.close()
+  // }
   
   for (var i in self.hosts) {
     counter++
